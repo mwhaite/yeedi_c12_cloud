@@ -1,0 +1,91 @@
+
+set_fan_speed:
+  name: Set fan speed
+  description: Set the vacuum fan speed.
+  target:
+    entity:
+      domain: vacuum
+  fields:
+    fan_speed:
+      required: true
+      example: standard
+      selector:
+        text:
+set_water_level:
+  name: Set water level
+  description: Set mopping water level (if supported).
+  target:
+    entity:
+      domain: vacuum
+  fields:
+    level:
+      required: true
+      example: 2
+      selector:
+        number:
+          min: 0
+          max: 3
+          mode: box
+set_clean_mode:
+  name: Set clean mode
+  description: Set cleaning mode (auto/edge/spot).
+  target:
+    entity:
+      domain: vacuum
+  fields:
+    mode:
+      required: true
+      example: auto
+      selector:
+        text:
+clean_rooms:
+  name: Clean rooms
+  description: Start room cleaning by IDs/names (model dependent).
+  target:
+    entity:
+      domain: vacuum
+  fields:
+    rooms:
+      required: true
+      example: ["living_room","kitchen"]
+      selector:
+        object:
+clean_areas:
+  name: Clean areas
+  description: Start area cleaning by area descriptors/coords (model dependent).
+  target:
+    entity:
+      domain: vacuum
+  fields:
+    areas:
+      required: true
+      example: [{"x1":0,"y1":0,"x2":1000,"y2":800}]
+      selector:
+        object:
+empty_bin:
+  name: Empty dust bin
+  description: Trigger self-empty (if dock supports it).
+  target:
+    entity:
+      domain: vacuum
+set_dnd:
+  name: Set Do Not Disturb
+  description: Enable/disable DND and/or set window.
+  target:
+    entity:
+      domain: vacuum
+  fields:
+    enabled:
+      required: true
+      selector:
+        boolean:
+    start:
+      required: false
+      example: "22:00"
+      selector:
+        text:
+    end:
+      required: false
+      example: "07:00"
+      selector:
+        text:

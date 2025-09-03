@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Yeedi/Ecovacs Cloud Login"
+      },
+      "pick": {
+        "title": "Select Device"
+      }
+    },
+    "error": {
+      "cannot_connect": "Login failed or API unreachable.",
+      "no_devices": "No MQTT-capable devices found on this account."
+    }
+  }
+}
