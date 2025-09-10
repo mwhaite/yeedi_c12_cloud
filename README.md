@@ -31,3 +31,12 @@ Home Assistant custom integration for Yeedi C12 (Cloud API).
 - Common issues: invalid credentials, wrong country code, or no MQTT-capable devices on the account.
 
 For contributor guidelines, coding standards, and test flow, see AGENTS.md and CONTRIBUTING.md.
+
+## Maps Roadmap
+Current release does not render maps. Planned work includes:
+- Subscribe to map/room events via `deebot_client` and persist latest state.
+- Expose a map as an `image`/`camera` entity for UI display.
+- Room discovery: list room names/IDs and enable name-based cleaning.
+- Investigate no‑go zones/virtual walls support (model dependent).
+
+Tracking issues will be filed under the repository Issues once created (label: `maps`).
