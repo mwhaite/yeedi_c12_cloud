@@ -39,4 +39,4 @@ Current release does not render maps. Planned work includes:
 - Room discovery: list room names/IDs and enable name-based cleaning.
 - Investigate no‑go zones/virtual walls support (model dependent).
 
-Tracking issues will be filed under the repository Issues once created (label: `maps`).
+Open issues: https://github.com/mwhaite/yeedi_c12_cloud/labels/maps
