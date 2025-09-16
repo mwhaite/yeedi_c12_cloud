@@ -13,7 +13,7 @@ Home Assistant custom integration for Yeedi C12 (Cloud API).
 
 ### HACS (optional)
 - Open HACS → Integrations → three-dots menu → Custom repositories.
-- Add repository URL: <ADD_REPO_URL_HERE> (Category: Integration).
+- Add repository URL: https://github.com/mwhaite/yeedi_c12_cloud (Category: Integration).
 - Search for and install “Yeedi C12 (Cloud API)” in HACS.
 - Restart Home Assistant.
 
@@ -21,6 +21,36 @@ Home Assistant custom integration for Yeedi C12 (Cloud API).
 - Settings → Devices & Services → Add Integration → "Yeedi C12 (Cloud API)".
 - Sign in with your Yeedi/Ecovacs account, choose your country code, and select the device to add.
 - No YAML configuration is required or supported.
+
+## Usage
+- Control via Developer Tools → Services. Examples:
+
+```yaml
+# Set fan speed
+service: vacuum.set_fan_speed
+data:
+  fan_speed: standard
+target:
+  entity_id: vacuum.yeedi_c12_cloud_your_device
+```
+
+```yaml
+# Locate the robot (beep)
+service: vacuum.send_command
+data:
+  command: locate
+target:
+  entity_id: vacuum.yeedi_c12_cloud_your_device
+```
+
+```yaml
+# Set mopping water level (if supported)
+service: vacuum.set_water_level
+data:
+  level: 2
+target:
+  entity_id: vacuum.yeedi_c12_cloud_your_device
+```
 
 ## Upgrading
 - Replace the `custom_components/yeedi_c12_cloud` folder with the new version and restart Home Assistant.

@@ -1,7 +1,7 @@
 {
   "domain": "yeedi_c12_cloud",
   "name": "Yeedi C12 (Cloud API)",
-  "documentation": "https://github.com/DeebotUniverse/client.py",
+  "documentation": "https://github.com/mwhaite/yeedi_c12_cloud",
   "version": "0.2.0",
   "codeowners": [
     "@your-handle"

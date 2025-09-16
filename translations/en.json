@@ -2,10 +2,23 @@
   "config": {
     "step": {
       "user": {
-        "title": "Yeedi/Ecovacs Cloud Login"
+        "title": "Yeedi/Ecovacs Cloud Login",
+        "data": {
+          "account": "Account (email or phone)",
+          "password": "Password",
+          "country": "Country code (ISO alpha-2)"
+        },
+        "data_description": {
+          "account": "Same credentials as the Yeedi/Ecovacs app.",
+          "country": "Two-letter code such as US, DE, FR."
+        }
       },
       "pick": {
-        "title": "Select Device"
+        "title": "Select Device",
+        "data": {
+          "device_id": "Device",
+          "device_name": "Custom name (optional)"
+        }
       }
     },
     "error": {
