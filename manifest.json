@@ -2,9 +2,10 @@
   "domain": "yeedi_c12_cloud",
   "name": "Yeedi C12 (Cloud API)",
   "documentation": "https://github.com/mwhaite/yeedi_c12_cloud",
+  "issue_tracker": "https://github.com/mwhaite/yeedi_c12_cloud/issues",
   "version": "0.2.0",
   "codeowners": [
-    "@your-handle"
+    "@mwhaite"
   ],
   "requirements": [
     "deebot-client>=13.7.0"
