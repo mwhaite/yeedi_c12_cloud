@@ -4,11 +4,11 @@ Home Assistant custom integration for Yeedi C12 (Cloud API).
 
 ## Installation
 - Manual (recommended for early adopters)
-  1) Copy this folder to your Home Assistant config at `config/custom_components/yeedi_c12_cloud/`.
+  1) Copy `custom_components/yeedi_c12_cloud/` from this repository into your Home Assistant config at `config/custom_components/`.
   2) Restart Home Assistant.
 - Developer symlink (for contributors)
   1) `mkdir -p ~/.homeassistant/custom_components`
-  2) From this repo folder: `ln -s "$(pwd)" ~/.homeassistant/custom_components/yeedi_c12_cloud`
+  2) From this repo folder: `ln -s "$(pwd)/custom_components/yeedi_c12_cloud" ~/.homeassistant/custom_components/yeedi_c12_cloud`
   3) Start HA: `hass -c ~/.homeassistant --debug`
 
 ### HACS (optional)
