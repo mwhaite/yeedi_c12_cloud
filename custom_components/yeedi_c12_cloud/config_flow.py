@@ -1,16 +1,17 @@
 
 from __future__ import annotations
 import time
+
+import aiohttp
 import voluptuous as vol
+from deebot_client.api_client import ApiClient
+from deebot_client.authentication import Authenticator
+from deebot_client.util import md5
 from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import DOMAIN, CONF_ACCOUNT, CONF_PASSWORD, CONF_COUNTRY, CONF_DEVICE_ID, CONF_DEVICE_NAME
-
-from deebot_client.authentication import Authenticator, create_rest_config
-from deebot_client.api_client import ApiClient
-from deebot_client.util import md5
-import aiohttp
+from .helpers import create_yeedi_api_config
 
 STEP_USER_SCHEMA = vol.Schema({
     vol.Required(CONF_ACCOUNT): str,
@@ -31,8 +32,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 device_id = md5(str(time.time()))
                 async with aiohttp.ClientSession() as session:
-                    rest = create_rest_config(session, device_id=device_id, alpha_2_country=country)
-                    auth = Authenticator(rest, account, md5(password))
+                    yeedi_config = create_yeedi_api_config(
+                        session, device_id=device_id, alpha_2_country=country
+                    )
+                    auth = Authenticator(yeedi_config.rest, account, md5(password))
                     api = ApiClient(auth)
                     devices = await api.get_devices()
                     mqtt_devs = getattr(devices, "mqtt", []) or []

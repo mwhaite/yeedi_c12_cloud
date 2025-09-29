@@ -3,19 +3,12 @@ from __future__ import annotations
 import time
 from typing import Any, Optional
 
-from homeassistant.components.vacuum import StateVacuumEntity, VacuumEntityFeature
-from homeassistant.const import STATE_CLEANING, STATE_DOCKED, STATE_IDLE, STATE_RETURNING, STATE_PAUSED
-from homeassistant.helpers.entity import DeviceInfo
-from homeassistant.helpers import entity_platform
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-
-from .const import DOMAIN, CONF_ACCOUNT, CONF_PASSWORD, CONF_COUNTRY, CONF_DEVICE_ID, CONF_DEVICE_NAME
-
-from deebot_client.authentication import Authenticator, create_rest_config
+import aiohttp
 from deebot_client.api_client import ApiClient
-from deebot_client.util import md5
-from deebot_client.mqtt_client import MqttClient, create_mqtt_config
+from deebot_client.authentication import Authenticator
+from deebot_client.commands.json.charge import Charge
+from deebot_client.commands.json.clean import Clean, CleanAction
+from deebot_client.commands.json.locate import PlaySound
 from deebot_client.device import Device as DeebotDevice
 from deebot_client.events import (
     BatteryEvent, CleanStateEvent, ErrorEvent, BinFullEvent, ChargeStateEvent
@@ -27,9 +20,6 @@ except Exception:
     FanSpeedEvent = None
     WaterLevelEvent = None
 
-from deebot_client.commands.json.clean import Clean, CleanAction
-from deebot_client.commands.json.charge import Charge
-from deebot_client.commands.json.locate import PlaySound
 try:
     from deebot_client.commands.json.fan import SetFanSpeed
 except Exception:
@@ -39,7 +29,30 @@ try:
 except Exception:
     SetWaterLevel = None
 
-import aiohttp
+from deebot_client.mqtt_client import MqttClient, create_mqtt_config
+from deebot_client.util import md5
+from homeassistant.components.vacuum import StateVacuumEntity, VacuumEntityFeature
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import (
+    STATE_CLEANING,
+    STATE_DOCKED,
+    STATE_IDLE,
+    STATE_PAUSED,
+    STATE_RETURNING,
+)
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_platform
+from homeassistant.helpers.entity import DeviceInfo
+
+from .const import (
+    DOMAIN,
+    CONF_ACCOUNT,
+    CONF_COUNTRY,
+    CONF_DEVICE_ID,
+    CONF_DEVICE_NAME,
+    CONF_PASSWORD,
+)
+from .helpers import create_yeedi_api_config
 
 SUPPORTED_FEATURES = (
     VacuumEntityFeature.STATE
@@ -149,8 +162,10 @@ class YeediCloudVacuum(StateVacuumEntity):
         device_id = md5(str(time.time()))
 
         self._session = aiohttp.ClientSession()
-        rest = create_rest_config(self._session, device_id=device_id, alpha_2_country=country)
-        self._auth = Authenticator(rest, account, md5(password))
+        yeedi_config = create_yeedi_api_config(
+            self._session, device_id=device_id, alpha_2_country=country
+        )
+        self._auth = Authenticator(yeedi_config.rest, account, md5(password))
         api = ApiClient(self._auth)
         devices = await api.get_devices()
 
@@ -163,7 +178,12 @@ class YeediCloudVacuum(StateVacuumEntity):
             target = devices.mqtt[0]
         self._bot = DeebotDevice(target, self._auth)
 
-        self._mqtt = MqttClient(create_mqtt_config(device_id=device_id, country=country), self._auth)
+        mqtt_config = create_mqtt_config(
+            device_id=device_id,
+            country=country,
+            override_mqtt_url=yeedi_config.mqtt_override,
+        )
+        self._mqtt = MqttClient(mqtt_config, self._auth)
         await self._bot.initialize(self._mqtt)
 
         self._bot.events.subscribe(BatteryEvent, self._on_battery)
