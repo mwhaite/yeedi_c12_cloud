@@ -60,6 +60,25 @@ target:
 - Enable debug logs (see CONTRIBUTING.md) and check Developer Tools → Logs.
 - Common issues: invalid credentials, wrong country code, or no MQTT-capable devices on the account.
 
+### Login smoke tests
+Need to quickly validate that the cloud login still works? Use the helper scripts in
+`scripts/` with your Yeedi credentials (they are never stored):
+
+```bash
+export YEEDI_ACCOUNT="name@example.com"
+export YEEDI_PASSWORD="super-secret"
+# Optional if you are not in the US
+export YEEDI_COUNTRY="GB"
+
+python scripts/login_smoke_success.py
+
+# To confirm that bad credentials are rejected
+python scripts/login_smoke_failure.py
+```
+
+The scripts exit with a non-zero status on unexpected results so they can be wired into
+CI or run ad-hoc after dependency updates.
+
 For contributor guidelines, coding standards, and test flow, see AGENTS.md and CONTRIBUTING.md.
 
 ## Maps Roadmap
