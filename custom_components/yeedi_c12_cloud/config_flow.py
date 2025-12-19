@@ -57,10 +57,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     errors["base"] = "cannot_connect"
                 _LOGGER.debug("HTTP error during Yeedi login (status %s): %s", err.status, err.message, exc_info=err)
             except aiohttp.ClientError as err:
+
                 errors["base"] = "cannot_connect"
                 _LOGGER.debug("Network error during Yeedi login: %s", err, exc_info=err)
             except Exception:
-                errors["base"] = "cannot_connect"
+                errors["base"] = "unknown"
+
                 _LOGGER.exception("Unexpected error during Yeedi login")
 
         return self.async_show_form(step_id="user", data_schema=STEP_USER_SCHEMA, errors=errors)
