@@ -1,5 +1,6 @@
 
 from __future__ import annotations
+import logging
 import time
 
 import aiohttp
@@ -12,6 +13,8 @@ from homeassistant.data_entry_flow import FlowResult
 
 from .const import DOMAIN, CONF_ACCOUNT, CONF_PASSWORD, CONF_COUNTRY, CONF_DEVICE_ID, CONF_DEVICE_NAME
 from .helpers import create_yeedi_api_config
+
+_LOGGER = logging.getLogger(__name__)
 
 STEP_USER_SCHEMA = vol.Schema({
     vol.Required(CONF_ACCOUNT): str,
@@ -47,8 +50,18 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         self._country = country
                         self._mqtt_devs = mqtt_devs
                         return await self.async_step_pick()
-            except Exception:
+            except aiohttp.ClientResponseError as err:
+                if err.status in (401, 403):
+                    errors["base"] = "invalid_auth"
+                else:
+                    errors["base"] = "cannot_connect"
+                _LOGGER.debug("HTTP error during Yeedi login (status %s): %s", err.status, err.message, exc_info=err)
+            except aiohttp.ClientError as err:
                 errors["base"] = "cannot_connect"
+                _LOGGER.debug("Network error during Yeedi login: %s", err, exc_info=err)
+            except Exception:
+                errors["base"] = "unknown"
+                _LOGGER.exception("Unexpected error during Yeedi login")
 
         return self.async_show_form(step_id="user", data_schema=STEP_USER_SCHEMA, errors=errors)
 
